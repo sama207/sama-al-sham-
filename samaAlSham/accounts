@@ -2,3 +2,8 @@ admin acc :
     email samaAlSham@gmail.com
     username: admin
     pass:Theshield@123
+
+user acc :
+email: user@email.com
+username:sue
+password:Theshield@2098

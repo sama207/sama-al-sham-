@@ -6,7 +6,7 @@ import datetime
 class Category(models.Model):
 
     name = models.CharField(max_length=50)
-    parent_category_id = models.IntegerField(null=True, blank=True)
+    parent_category = models.CharField(null=True, blank=True,max_length=25)
     description = models.CharField(max_length=250)
 
     def __str__(self):

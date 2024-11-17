@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Product, Category
+from .models import Product
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -19,24 +19,9 @@ def product(request, pk):
     return render(request, "product.html", {"product": product})
 
 
-def category(request, cat):
-    cat = cat.replace("-", " ")
-    try:
-        if(cat =='نسائي' or cat =='رجالي' or cat =='ولادي' or cat =='بناتي'):
-            category = Category.objects.filter(parent_category=cat)
-            products=[]
-            for cat in category:
-                products.append(Product.objects.filter(category=cat))
-        else:
-            category = Category.objects.get(name=cat)
-            products = Product.objects.filter(category=category)
-        return render(
-            request, "category.html", {"products": products, "category": category}
-        )
-
-    except:
-        messages.success(request, ("category doesnt exist"))
-        return redirect("home")
+def category(request, pk):
+    category = Product.objects.get(id=Product.category)
+    return render(request, "category.html", {"category": category})
 
 
 def login_user(request):
