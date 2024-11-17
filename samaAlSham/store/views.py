@@ -22,17 +22,20 @@ def product(request, pk):
 def category(request, cat):
     cat = cat.replace("-", " ")
     try:
-        if(cat =='نسائي' or cat =='رجالي' or cat =='ولادي' or cat =='بناتي'):
+        if cat == "نسائي" or cat == "رجالي" or cat == "ولادي" or cat == "بناتي":
             category = Category.objects.filter(parent_category=cat)
             products=[]
-            for cat in category:
-                products.append(Product.objects.filter(category=cat))
+            for categ in category:
+                products.extend(Product.objects.filter(category=categ))
+            return render(
+                request, "category.html", {"products": products, "category": cat}
+            )
         else:
             category = Category.objects.get(name=cat)
             products = Product.objects.filter(category=category)
-        return render(
-            request, "category.html", {"products": products, "category": category}
-        )
+            return render(
+                request, "category.html", {"products": products, "category": category}
+            )
 
     except:
         messages.success(request, ("category doesnt exist"))
