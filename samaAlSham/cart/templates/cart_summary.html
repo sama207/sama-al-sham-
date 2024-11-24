@@ -41,8 +41,33 @@
                         {% endif %}
                         </br>
                         </br>
+                        <div class="row justify-content-center">
+                            <div class="col-md-2">Quantity : </div>
+                            <div class="col-md-2">
+                                <select class="form-select form-select-sm" aria-label="Default select example"
+                                    id="select{{product.id}}">
+                                    <option selected>
+                                        {% for key,value in quantities.items%}
+                                        {% if key == product.id|slugify %}
+                                        {{value}}
+                                        {% endif %}
+                                        {% endfor %}
+
+                                    </option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </div>
+                        </div>
+                        </br>
+                        </br>
 
                         <a class="btn btn-secondary" href="{% url 'home' %}"> Home </a>
+                        <button type="button" data-index="{{product.id}}"
+                            class="btn btn-secondary update-cart">Update</button>
                     </center>
                 </div>
             </div>
@@ -56,4 +81,36 @@
 
 
 </div>
+
+<script>
+
+    $(document).on('click', '#update-cart', function (e) {
+
+        e.preventDefault();
+
+        var productId = $(this).data('index');
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "cart_update" %}',
+            data: {
+                product_id: productId,
+                product_qty: $('#select' + productId + 'option:selected').text(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post',
+            },
+            success: function (json) {
+                // document.getElementById("cart_quantity").textContent = json.qty
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.log(xhr.responseText);
+            }
+        });
+    })
+
+
+</script>
+
+
 {% endblock%}
