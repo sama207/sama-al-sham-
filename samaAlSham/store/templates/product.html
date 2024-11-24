@@ -25,15 +25,41 @@
                         </br>
                         {{product.sale_price}} NIS
                         </br>
+                        {% else %}
+                        {{product.price}} NIS
                         {% endif %}
                         </br>
                         </br>
 
                         <a class="btn btn-secondary" href="{% url 'home' %}"> Home </a>
+                        <button type="button" value="{{ product.id }}" class="btn btn-secondary" id="add-cart">Add To
+                            Cart</button>
                     </center>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+
+    $(document).on('click', '#add-cart', function (e) {
+
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '{% url "cart_add" %}',
+            data: {
+                product_id: $('#add-cart').val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post',
+            },
+            success: function (json) {
+                document.getElementById("cart_quantity").textContent = json.qty
+            },
+            error: function (xhr, status, error) {
+                console.log(xhr.responseText);
+            }
+        });
+    })
+</script>
 {% endblock%}
