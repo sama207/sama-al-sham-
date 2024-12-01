@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .forms import SignUpForm
+from .forms import SignUpForm, UpdateUserForm, ChangePasswordForm
 from django import forms
 
 
@@ -24,7 +24,7 @@ def category(request, cat):
     try:
         if cat == "نسائي" or cat == "رجالي" or cat == "ولادي" or cat == "بناتي":
             category = Category.objects.filter(parent_category=cat)
-            products=[]
+            products = []
             for categ in category:
                 products.extend(Product.objects.filter(category=categ))
             return render(
@@ -38,7 +38,7 @@ def category(request, cat):
             )
 
     except:
-        messages.success(request, ("category doesnt exist"))
+        messages.success(request, ("الصنف غير موجود"))
         return redirect("home")
 
 
@@ -50,10 +50,10 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            messages.success(request, "you have been logged in")
+            messages.success(request, "تم تسجيل الدخول")
             return redirect("home")
         else:
-            messages.success(request, "there was an error while loggin in")
+            messages.success(request, "حدث خطأ اثناء تسجيل الدخول")
             return redirect("login")
 
     else:
@@ -62,7 +62,7 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    messages.success(request, ("you have been logged out"))
+    messages.success(request, ("تم تسجيل الخروج"))
     return redirect("home")
 
 
@@ -78,10 +78,53 @@ def register_user(request):
 
             user = authenticate(username=username, password=password)
             login(request, user)
-            messages.success(request, ("you have registered successfully"))
+            messages.success(request, ("تم انشاء حساب المستخدم"))
             return redirect("home")
         else:
-            messages.success(request, ("there was a problem , pls try again"))
+            messages.success(request, ("حدث خطأ ,الرجاء المحاولة لاحقا"))
             return redirect("register")
 
     return render(request, "register.html", {"form": form})
+
+
+def update_user(request):
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)
+        user_form = UpdateUserForm(request.POST or None, instance=current_user)
+
+        if user_form.is_valid():
+            user_form.save()
+
+            login(request, current_user)
+            messages.success(request, "تم تعديل معلومات المستخدم")
+            return redirect("home")
+
+        return render(request, "update_user.html", {"user_form": user_form})
+
+    else:
+        messages.success(request, "يجب ان تقوم بتسجيل الدخول")
+        return redirect("home")
+
+
+def update_password(request):
+    if request.user.is_authenticated:
+        current_user = request.user
+
+        if request.method == "POST":
+            form = ChangePasswordForm(current_user, request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "تم تعديل كلمة المرور")
+                login(request, current_user)
+                return redirect("update_user")
+            else:
+                for error in list(form.errors.values()):
+                    messages.error(request, error)
+                return redirect('update_password')
+        else:
+            form = ChangePasswordForm(current_user)
+            return render(request, "update_password.html", {"form": form})
+
+    else:
+        messages.success(request, "يجب ان تقوم بتسجيل الدخول")
+        return redirect("home")
