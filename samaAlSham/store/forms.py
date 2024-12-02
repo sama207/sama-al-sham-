@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, SetPasswordForm
 from django import forms
+from .models import Profile
 
 
 class SignUpForm(UserCreationForm):
@@ -68,6 +69,7 @@ class UpdateUserForm(UserChangeForm):
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "Email Address"}
         ),
+        required=False,
     )
     first_name = forms.CharField(
         label="",
@@ -75,6 +77,7 @@ class UpdateUserForm(UserChangeForm):
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "First Name"}
         ),
+        required=False,
     )
     last_name = forms.CharField(
         label="",
@@ -82,6 +85,7 @@ class UpdateUserForm(UserChangeForm):
         widget=forms.TextInput(
             attrs={"class": "form-control", "placeholder": "Last Name"}
         ),
+        required=False,
     )
 
     class Meta:
@@ -110,7 +114,7 @@ class ChangePasswordForm(SetPasswordForm):
         fields = ["new_password1", "new_password2"]
 
     def __init__(self, *args, **kwargs):
-        super(ChangePasswordForm, self).__init__(*args, **kwargs)     
+        super(ChangePasswordForm, self).__init__(*args, **kwargs)
 
         self.fields["new_password1"].widget.attrs["class"] = "form-control"
         self.fields["new_password1"].widget.attrs["placeholder"] = "Password"
@@ -127,4 +131,50 @@ class ChangePasswordForm(SetPasswordForm):
         )
 
 
+class UserInfoForm(forms.ModelForm):
+    phone = forms.CharField(
+        label="",
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Phone"},
+        ),
+        required=False,
+    )
+    address1 = forms.CharField(
+        label="",
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Address 1"},
+        ),
+        required=False,
+    )
+    address2 = forms.CharField(
+        label="",
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Address 2"},
+        ),
+        required=False,
+    )
+    city = forms.CharField(
+        label="",
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "City "},
+        ),
+        required=False,
+    )
+    zip_code = forms.CharField(
+        label="",
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Zip Code "},
+        ),
+        required=False,
+    )
+    country = forms.CharField(
+        label="",
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Country"},
+        ),
+        required=False,
+    )
 
+    class Meta:
+        model = Profile
+        fields = ("phone", "address1", "address2", "city", "zip_code", "country")

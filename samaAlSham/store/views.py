@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
-from .models import Product, Category
+from .models import Product, Category, Profile
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .forms import SignUpForm, UpdateUserForm, ChangePasswordForm
+from .forms import SignUpForm, UpdateUserForm, ChangePasswordForm, UserInfoForm
 from django import forms
 
 
@@ -78,8 +78,8 @@ def register_user(request):
 
             user = authenticate(username=username, password=password)
             login(request, user)
-            messages.success(request, ("تم انشاء حساب المستخدم"))
-            return redirect("home")
+            messages.success(request, ("تم انشاء حسابك يمكنك ملئ معلومات الشخصية"))
+            return redirect("update_info")
         else:
             messages.success(request, ("حدث خطأ ,الرجاء المحاولة لاحقا"))
             return redirect("register")
@@ -120,10 +120,28 @@ def update_password(request):
             else:
                 for error in list(form.errors.values()):
                     messages.error(request, error)
-                return redirect('update_password')
+                return redirect("update_password")
         else:
             form = ChangePasswordForm(current_user)
             return render(request, "update_password.html", {"form": form})
+
+    else:
+        messages.success(request, "يجب ان تقوم بتسجيل الدخول")
+        return redirect("home")
+
+
+def update_info(request):
+    if request.user.is_authenticated:
+        current_user = Profile.objects.get(user__id=request.user.id)
+        form = UserInfoForm(request.POST or None, instance=current_user)
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(request, "تم تعديل معلوماتك")
+            return redirect("home")
+
+        return render(request, "update_info.html", {"form": form})
 
     else:
         messages.success(request, "يجب ان تقوم بتسجيل الدخول")
