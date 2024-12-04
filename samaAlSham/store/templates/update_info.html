@@ -18,12 +18,24 @@
     <div class="row">
 
         <div class="col-md-6 offset-md-3">
+            <strong>Billing Info </strong> 
+            <br/>
+            <br/> <br/>
+            <br/>
             <form method="POST" action="{% url 'update_info' %}">
                 {% csrf_token %}
-
+                <strong>Your Info </strong>
+                <br />
+                <br />
                 {{form.as_p}}
                 </br>
-                <button type="submit" class="btn btn-secondary">Update Info</button>
+                </br>
+                <strong>Shipping Info </strong>
+                <br />
+                <br />
+                {{shipping_form.as_p}}
+
+                <button type="submit" class="btn btn-secondary">تعديل المعلومات</button>
                 </br>
                 </br>
             </form>

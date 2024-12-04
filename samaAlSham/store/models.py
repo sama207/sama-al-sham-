@@ -91,6 +91,7 @@ class Profile(models.Model):
     city = models.CharField(max_length=200, blank=True)
     zip_code = models.CharField(max_length=200, blank=True)
     country = models.CharField(max_length=200, blank=True)
+    old_cart = models.CharField(max_length=200, blank=True, null=True)
 
     def __str__(self):
         return self.user.username
@@ -100,5 +101,6 @@ def create_profile(sender, instance, created, **kwargs):
     if created:
         user_profile = Profile(user=instance)
         user_profile.save()
-post_save.connect(create_profile, sender=User)
 
+
+post_save.connect(create_profile, sender=User)

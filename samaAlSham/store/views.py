@@ -6,6 +6,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .forms import SignUpForm, UpdateUserForm, ChangePasswordForm, UserInfoForm
 from django import forms
+from django.db.models import Q
+import json
+from cart.cart import Cart
+from payment.froms import ShippingForm
+from payment.models import ShippingAddress
 
 
 # Create your views here.
@@ -50,6 +55,14 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            # shopping cart stuf
+            current_user = Profile.objects.get(user__id=request.user.id)
+            saved_cart = current_user.old_cart
+            if saved_cart:
+                converted_cart = json.loads(saved_cart)
+                cart = Cart(request)
+                for key, value in converted_cart.items():
+                    cart.db_add(product=key, quantity=value)
             messages.success(request, "تم تسجيل الدخول")
             return redirect("home")
         else:
@@ -135,14 +148,40 @@ def update_info(request):
         current_user = Profile.objects.get(user__id=request.user.id)
         form = UserInfoForm(request.POST or None, instance=current_user)
 
-        if form.is_valid():
+        shipping_user = ShippingAddress.objects.get(user__id=request.user.id)
+        shipping_form = ShippingForm(request.POST or None, instance=shipping_user)
+
+        if form.is_valid() or shipping_form.is_valid():
             form.save()
+            shipping_form.save()
 
             messages.success(request, "تم تعديل معلوماتك")
             return redirect("home")
 
-        return render(request, "update_info.html", {"form": form})
+        return render(
+            request, "update_info.html", {"form": form, "shipping_form": shipping_form}
+        )
 
     else:
         messages.success(request, "يجب ان تقوم بتسجيل الدخول")
         return redirect("home")
+
+
+def search(request):
+    if request.method == "POST":
+        searched = request.POST["searched"]
+
+        # query the (Products) DB model
+        # the i before contains => to searched without sensitive => it will include both capital & small letters
+        searched = Product.objects.filter(
+            Q(name__icontains=searched) | Q(description__icontains=searched)
+        )
+
+        if not searched:
+            messages.success(request, "هاذا المنتج غير موجود")
+            return render(request, "search.html", {})
+
+        return render(request, "search.html", {"searched": searched})
+
+    else:
+        return render(request, "search.html", {})

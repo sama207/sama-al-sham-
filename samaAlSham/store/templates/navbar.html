@@ -6,28 +6,28 @@
                 class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+                <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'home' %}">الصفحة الرئيسية</a>
                 </li>
                 {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">Profile</a>
+                        data-bs-toggle="dropdown" aria-expanded="false">الحساب الشخصي</a>
 
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 
-                        <li><a class="dropdown-item" href="{% url 'update_user'  %}">User Profile</a></li>
-                        <li><a class="dropdown-item" href="{% url 'update_info'  %}">User Info</a></li>
+                        <li><a class="dropdown-item" href="{% url 'update_user'  %}">الحساب الشخصي للمستخدم</a></li>
+                        <li><a class="dropdown-item" href="{% url 'update_info'  %}">معلومات المستخدم</a></li>
 
                     </ul>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">تسجيل الخروج</a></li>
                 {% else %}
-                <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Register</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">تسجيل الدخول</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">انشاء حساب جديد</a></li>
                 {% endif %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
+                        data-bs-toggle="dropdown" aria-expanded="false">الاصناف</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 
                         <li><a class="dropdown-item" href="{% url 'category' 'نسائي' %}">نسائي</a></li>
@@ -43,6 +43,12 @@
                     </ul>
                 </li>
             </ul>
+            <form class="d-flex" role="search" method="POST" action="{% url 'search' %}">
+                {%csrf_token%}
+                <input class="form-control me-2" type="search" placeholder="ابحث عن منتج" aria-label="Search"
+                    name="searched">
+                <button class="btn btn-outline-success" type="submit" style="margin-right: 10px;">ابحث</button>
+            </form>
             <form class="d-flex">
                 <a href="{% url 'cart_summary' %}" class="btn btn-outline-dark">
                     <i class="bi-cart-fill me-1"></i>
