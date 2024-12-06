@@ -6,7 +6,8 @@
                 class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'home' %}">الصفحة الرئيسية</a>
+                <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'home' %}">الصفحة
+                        الرئيسية</a>
                 </li>
                 {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
@@ -42,6 +43,19 @@
                         <li><a class="dropdown-item" href="{% url 'category' 'ملابس صلاة'%}">ملابس صلاة</a></li>
                     </ul>
                 </li>
+                {% if user.is_superuser %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">الطلبات</a>
+
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                        <li><a class="dropdown-item" href="{% url 'shipped_dash'  %}">الطلبات المرسلة</a></li>
+                        <li><a class="dropdown-item" href="{% url 'not_shipped_dash'  %}">الطلبات الغير مرسلة</a></li>
+
+                    </ul>
+                </li>
+                {% endif %}
             </ul>
             <form class="d-flex" role="search" method="POST" action="{% url 'search' %}">
                 {%csrf_token%}

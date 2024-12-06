@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <center>
+            <div class="col-8">
+                <h3>
+                    الطلبات المُرسلة
+                </h3>
+                <div class="card">
+                    <div class="card-header">
+                        الطلب {{order.id}} - {{order.amount_paid}} شيكل
+                    </div>
+                    <div class="card-body">
+                        {{order.order_email}} : ايميل </br>
+                        {% if order.date_shipped %}
+                        {{order.date_shipped}} : تاريخ التوصيل </br>
+                        {% else %}
+                        {{order.date_ordered}} : تاريخ الطلب </br>
+                        {% endif %}
+                        {{order.order_full_name}} : الاسم</br>
+                        {{order.shipping_address}} : عنوان التوصيل</br>
+                        المنتجات:</br>
+                        {% for item in items %}
+                        {{item.product}} {{item.quantity}} {{item.price}} شيكل
+                    </br>
+                        {% endfor %}
+                    </div>
+                </div>
+                </br>
+
+                <a class="btn btn-dark" href="{% url 'home' %}">الصفحة الرئيسية</a>
+                </br>
+                </br>
+                </br>
+            </div>
+        </center>
+    </div>
+</div>
+{% endblock%}

@@ -52,17 +52,34 @@
                     معلومات التوصيل
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{% url 'billing_info' %}">
-                        {%csrf_token%}
-                        {{shipping_form.as_p}}
+                    {{ shipping_info.shipping_full_name }} : الاسم <br />
+                    {{ shipping_info.shipping_email }} : الايميل <br />
+                    {{ shipping_info.shipping_address1 }} : العنوان الاول <br />
+                    {{ shipping_info.shipping_address2 }} : العنوان الثاني <br />
+                    {{ shipping_info.shipping_city }} : المدينة<br />
+                    {{ shipping_info.shipping_state }} : الدولة<br />
+                    {{ shipping_info.shipping_zipcode }} : الرمز البريدي<br />
+                    {{ shipping_info.shipping_country }} : بلد<br /><br />
+                    <a href="{% url 'checkout' %}" class="btn btn-outline-secondary">تحديث معلومات التوصيل</a>
                 </div>
             </div>
             </br>
-            <a href="#" class="btn btn-secondary">ادفع الان</a>
+            <div class="card">
+                <div class="card-header">
+                    معلومات الدفع
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{% url 'process_order' %}">
+                        {% csrf_token %}
+                        {{billing_form.as_p}}
+                </div>
+            </div>
+            </br>
+            <button type="submit" class="btn btn-secondary">ادفع الان</button>
+            </br>
+            </br>
+            </br>
             </form>
-            </br>
-            </br>
-            </br>
         </div>
     </div>
 </div>
