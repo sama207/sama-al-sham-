@@ -4,8 +4,8 @@
 <header class="bg-dark py-5">
     <div class="container px-4 px-lg-5 my-5">
         <div class="text-center text-white">
-            <h1 class="display-4 fw-bolder">Shop in Style</h1>
-            <p class="lead fw-normal text-white-50 mb-0">With this shop hompeage template</p>
+            <h1 class="display-4 fw-bolder">عربة التسوق</h1>
+            <p class="lead fw-normal text-white-50 mb-0">عرض عربة التسوق الخاصة بك</p>
         </div>
     </div>
 </header>
@@ -28,7 +28,7 @@
                         {% if product.is_on_sale %}
                         <div class="d-flex justify-content-center small text-warning mb-2">
                             <div class="bi-star-fill"></div>
-                            &nbsp;&nbsp;Sale!&nbsp;&nbsp;
+                            &nbsp;&nbsp;عرض!&nbsp;&nbsp;
                             <div class="bi-star-fill"></div>
                         </div>
                         <!-- Product price-->
@@ -42,7 +42,7 @@
                         </br>
                         </br>
                         <div class="row justify-content-center">
-                            <div class="col-md-2">Quantity : </div>
+                            <div class="col-md-2">الكمية : </div>
                             <div class="col-md-2">
                                 <select class="form-select form-select-sm" aria-label="Default select example"
                                     id="select{{product.id}}">
@@ -65,13 +65,13 @@
                         </br>
                         </br>
 
-                        <a class="btn btn-secondary" href="{% url 'home' %}"> Home </a>
+                        <a class="btn btn-secondary" href="{% url 'home' %}"> الصفحة الرئيسية </a>
 
                         <button type="button" data-index="{{product.id}}"
-                            class="btn btn-secondary update-cart">Update</button>
+                            class="btn btn-secondary update-cart">تعديل</button>
 
                         <button type="button" data-index="{{product.id}}"
-                            class="btn btn-danger delete-product">Remove</button>
+                            class="btn btn-danger delete-product">حذف</button>
                     </center>
                 </div>
             </div>
@@ -80,14 +80,17 @@
 
     {% endfor %}
     </br>
+    <div align="right">
+        <strong> المجموع : {{totals}} شيكل </strong>
+    </div>
+    <a href="{% url 'checkout' %}" class="btn btn-success" style="margin-left: 10px;">ادفع</a>
 
-    <strong> Total : {{totals}}NIS </strong>
     </br>
     </br>
     </br>
     </br>
     {% else %}
-    <p>No products in your cart</p>
+    <p>لا توجد منتجات في عربة التسوق الخاصة بك</p>
     {% endif %}
 
 

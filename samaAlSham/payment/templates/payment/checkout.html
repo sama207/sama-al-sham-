@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">الدفع</h1>
+            <p class="lead fw-normal text-white-50 mb-0">مراجعة الطلب</p>
+        </div>
+    </div>
+</header>
+
+</br>
+<div class="container" align="right">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card" style="width: 18rem;" align="right">
+                <div class="card-header">
+                    <a href="{% url 'cart_summary'%}" class="btn btn-sm btn-outline-secondary" align="left"
+                        style="margin-right: 60px;">تعديل
+                        الطلب</a>
+                    ملخص الطلب
+                </div>
+                <ul class="list-group list-group-flush" align="right">
+                    {% for product in cart_products%}
+                    <li class="list-group-item" align="right">
+                        {{product.name}} :
+                        {% if product.is_on_sale %}
+                        {{product.sale_price}} شيكل
+                        {% else %}
+                        {{product.price}} شيكل
+                        {% endif %}
+                        </br>
+                        الكمية :
+                        {% for key,value in quantities.items %}
+                        {% if key == product.id|slugify %}
+                        {{value}}
+                        {% endif %}
+                        {% endfor %}
+                        </br>
+                        </br>
+                        {% endfor %}
+                    </li>
+                </ul>
+                <div class="card-footer" align="right">
+                    المجموع : {{totals}} شيكل
+                </div>
+            </div>
+            </br>
+            <div class="card">
+                <div class="card-header">
+                    معلومات التوصيل
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{% url 'billing_info' %}">
+                        {{csrf_token}}
+                        {{shipping_form.as_p}}
+                </div>
+            </div>
+            </br>
+            <button type="submit" class="btn btn-secondary">الانتقال إلى الفوترة</button>
+            </form>
+            </br>
+            </br>
+            </br>
+        </div>
+    </div>
+</div>
+
+{% endblock%}

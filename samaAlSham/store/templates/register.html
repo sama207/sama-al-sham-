@@ -15,8 +15,8 @@
 </br>
 <!-- Section-->
 <div class="container">
+<center>
     <div class="row">
-
         <div class="col-md-6 offset-md-3">
             <form method="POST" action="{% url 'register' %}">
                 {% csrf_token %}
@@ -33,6 +33,10 @@
         </br>
         </br>
     </div>
+    <div class="col-6 m-3">
+        <p>already have an account</p><a class="btn btn-secondary" href="{% url 'login' %}"> login</a>
+    </div>
+</center>
 </div>
 
 {% endblock%}
