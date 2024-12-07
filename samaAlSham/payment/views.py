@@ -2,10 +2,10 @@ from django.shortcuts import render, redirect
 from cart.cart import Cart
 from payment.froms import ShippingForm, PaymentForm
 from payment.models import ShippingAddress, Order, OrderItem
-from store.models import Product
+from store.models import Product,Profile
 from django.contrib import messages
 from django.contrib.auth.models import User
-
+import datetime
 
 # Create your views here.
 def payment_success(request):
@@ -134,6 +134,11 @@ def process_order(request):
                 if key == "session_key":
                     del request.session[key]
 
+            # delete shopping cart
+            current_user=Profile.objects.filter(user_id=request.user.id)
+            current_user.update(old_cart="")
+
+            
             messages.success(request, "تم تثبيت الطلب")
             return redirect("home")
         else:
@@ -176,8 +181,16 @@ def process_order(request):
 
 
 def not_shipped_dash(request):
-    if request.user.is_authenticated and request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_superuser:
         orders = Order.objects.filter(shipped=False)
+
+        if request.POST:
+            status = request.POST["shipping_status"]
+            num=request.POST['num']
+            order = Order.objects.filter(id=num)
+            now = datetime.datetime.now()
+            order.update(shipped=True)
+            messages.success(request, ("تم تحديث حالة التوصيل"))
 
         return render(request, "payment/not_shipped_dash.html", {"orders": orders})
     else:
@@ -186,9 +199,17 @@ def not_shipped_dash(request):
 
 
 def shipped_dash(request):
-    if request.user.is_authenticated and request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_superuser:
         orders = Order.objects.filter(shipped=True)
 
+        if request.POST: 
+            status = request.POST["shipping_status"]
+            num=request.POST['num']
+            order = Order.objects.filter(id=num)
+            now = datetime.datetime.now()
+            order.update(shipped=Fal,date_shipped=now)
+            messages.success(request, ("تم تحديث حالة التوصيل"))
+        
         return render(request, "payment/shipped_dash.html", {"orders": orders})
     else:
         messages.success(request, ("لايوجد صلاحية"))
@@ -200,9 +221,17 @@ def orders(request, pk):
         order = Order.objects.get(id=pk)
         items = OrderItem.objects.filter(order=pk)
 
-        return render(
-            request, "payment/orders.html", {"order": order, "items": items}
-        )
+        if request.POST:
+            status = request.POST["shipping_status"]
+            now = datetime.datetime.now()
+            if status == "true":
+                order = Order.objects.filter(id=pk)
+                order.update(shipped=True,date_shipped=now)
+            else:
+                order = Order.objects.filter(id=pk)
+                order.update(shipped=False,date_shipped=now)
+            messages.success(request, ("تم تحديث حالة التوصيل"))
+        return render(request, "payment/orders.html", {"order": order, "items": items})
 
     else:
         messages.success(request, ("لايوجد صلاحية"))
